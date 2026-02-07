@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>All Events</title>
+
+<!-- Bootstrap CSS -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+
+<!-- Bootstrap Icons -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+	rel="stylesheet">
+
+<style>
+body {
+	background: #f8fafc;
+}
+
+/* Cards */
+.event-card {
+	border-radius: 14px;
+	border: none;
+}
+
+/* Date badge */
+.badge-date {
+	background: #e0e7ff;
+	color: #4338ca;
+}
+
+/* Soft buttons */
+.btn-soft {
+	border-radius: 10px;
+	font-size: 0.85rem;
+}
+
+/* Register button */
+.btn-register {
+	background: linear-gradient(135deg, #4f46e5, #6366f1);
+	border: none;
+	border-radius: 12px;
+	font-weight: 600;
+}
+
+.btn-register:hover {
+	opacity: 0.9;
+}
+
+/* Text polish */
+.event-card p {
+	line-height: 1.4;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container py-5">
+
+	<!-- Page Header -->
+	<div class="text-center mb-5">
+		<h2 class="fw-bold">All Public Events 🎉</h2>
+		<p class="text-muted">Discover and register for upcoming events</p>
+	</div>
+
+	<!-- No Events -->
+	<div th:if="${#lists.isEmpty(events)}" class="alert alert-info text-center">
+		No events available right now.
+	</div>
+
+	<!-- Events Grid -->
+	<div class="row g-4" th:if="${!#lists.isEmpty(events)}">
+		<div class="col-md-6 col-lg-4" th:each="event : ${events}">
+
+			<div class="card event-card shadow-sm p-3 h-100">
+				<div class="d-flex flex-column h-100">
+
+					<!-- Title -->
+					<h5 class="fw-semibold mb-1" th:text="${event.title}"></h5>
+
+					<!-- Location -->
+					<p class="text-muted small mb-2">
+						<i class="bi bi-geo-alt me-1"></i>
+						<span th:text="${event.location}"></span>
+					</p>
+
+					<!-- Poll Button -->
+					<div class="mb-2">
+						<a th:href="@{/polls/event/{id}(id=${event.id})}"
+						   class="btn btn-outline-secondary btn-sm">
+							<i class="bi bi-bar-chart me-1"></i>
+							View Polls
+						</a>
+					</div>
+
+                    <div class="mb-2">
+    <span class="btn btn-outline-primary btn-sm disabled">
+        <i class="bi bi-currency-rupee me-1"></i>
+        <span th:text="${event.ticketPrice == 0 ? 'Free' : event.ticketPrice}"></span>
+    </span>
+</div>
+                    
+
+					<!-- Date -->
+					<span class="badge bg-primary-subtle text-primary mb-3 align-self-start">
+						📅 <span th:text="${event.eventDate}"></span>
+					</span>
+
+					<!-- Register Button (bottom aligned) -->
+					<div class="mt-auto">
+						<a th:href="@{/tickets/register/{id}(id=${event.id})}"
+						   class="btn btn-register w-100 text-white">
+							<i class="bi bi-ticket-perforated me-1"></i>
+							Register
+						</a>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<!-- Back -->
+	<div class="text-center mt-5">
+    <a href="/dashboard"
+       class="d-inline-flex align-items-center gap-1 px-3 py-1
+              bg-primary bg-opacity-10 text-primary
+              rounded-3 text-decoration-none small fw-medium">
+        <i class="bi bi-arrow-left"></i>
+        Back to Dashboard
+    </a>
+</div>
+
+
+
+
+</div>
+
+</body>
+</html>

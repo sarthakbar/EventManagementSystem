@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+body {
+	background: #f8fafc;
+}
+
+/* Cards */
+.nav-card {
+	border-radius: 16px;
+	border: none;
+}
+
+.event-card {
+	border-radius: 14px;
+	border: none;
+}
+
+/* Buttons */
+.btn-soft {
+	border-radius: 10px;
+	font-size: 0.85rem;
+}
+
+/* Description polish */
+.event-card p {
+	line-height: 1.4;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container py-5">
+
+	<!-- Top Bar -->
+	<div class="bg-primary text-white mb-4 shadow-sm rounded-3">
+		<div class="container py-3 d-flex justify-content-between align-items-center">
+
+			<div class="d-flex align-items-center gap-3">
+				<h5 class="mb-0 fw-semibold">Dashboard</h5>
+
+				<div class="d-flex align-items-center gap-2 bg-white bg-opacity-25 px-3 py-1 rounded-pill">
+					<div class="rounded-circle bg-light text-primary fw-bold d-flex align-items-center justify-content-center"
+						style="width:36px;height:36px;"
+						th:text="${#strings.substring(userName,0,1)}"></div>
+					<span>Welcome, <span th:text="${userName}"></span></span>
+				</div>
+			</div>
+
+			<form th:action="@{/logout}" method="post"
+      onsubmit="return confirm('Are you sure you want to log out?');"
+      class="mb-0">
+
+    <button type="submit"
+            class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1 text-white border-danger-subtle">
+        <i class="bi bi-box-arrow-right"></i>
+        Logout
+    </button>
+
+</form>
+
+
+
+		</div>
+	</div>
+
+	<!-- Top Actions -->
+	<div class="row g-4 mb-5">
+		<div class="col-md-6">
+			<div class="card nav-card shadow-sm p-4 text-center h-100">
+				<h5>Browse Events 🎉</h5>
+				<p class="text-muted mb-3">Discover public events</p>
+				<a href="/events/allEvents" class="btn btn-primary">Browse Events</a>
+			</div>
+		</div>
+
+		<div class="col-md-6">
+			<div class="card nav-card shadow-sm p-4 text-center h-100">
+				<h5>Create Event ➕</h5>
+				<p class="text-muted mb-3">Host your own event</p>
+				<a href="/events/create" class="btn btn-success">Create Event</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- My Created Events -->
+	<h4 class="fw-bold mb-3">My Created Events</h4>
+
+	<div th:if="${#lists.isEmpty(createdEvents)}" class="alert alert-info">
+		No events created yet.
+	</div>
+
+	<div class="row g-4 mb-5" th:if="${!#lists.isEmpty(createdEvents)}">
+		<div class="col-md-6 col-lg-4" th:each="event : ${createdEvents}">
+			<div class="card event-card shadow-sm p-3 h-100">
+
+				<div class="d-flex flex-column h-100">
+
+					<!-- Title -->
+					<h5 class="fw-semibold mb-1" th:text="${event.title}"></h5>
+
+					<!-- Description -->
+					<p class="text-muted small mb-2"
+					   th:text="${event.description}">
+					</p>
+
+					<!-- Location -->
+					<p class="text-muted small mb-2">
+						📍 <span th:text="${event.location}"></span>
+					</p>
+
+					<!-- Poll Button -->
+					<div class="mb-2">
+						<a th:href="@{/polls/event/{id}(id=${event.id})}"
+						   class="btn btn-outline-secondary btn-sm">
+							<i class="bi bi-bar-chart me-1"></i>
+							View Polls
+						</a>
+					</div>
+
+                    <!-- Create Poll Button -->
+<div class="mb-2">
+    <a th:href="@{/polls/create/{id}(id=${event.id})}"
+       class="btn btn-outline-warning btn-sm">
+        <i class="bi bi-plus-circle me-1"></i>
+        Create Poll
+    </a>
+</div>
+
+                     
+
+					<!-- Date -->
+					<span class="badge bg-primary-subtle text-primary mb-3 align-self-start">
+						📅 <span th:text="${event.eventDate}"></span>
+					</span>
+
+					<!-- Actions -->
+					<div class="mt-auto d-flex flex-wrap gap-2 align-items-center">
+
+    <!-- Edit -->
+    <a th:href="@{/events/edit/{id}(id=${event.id})}"
+       class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1">
+        <i class="bi bi-pencil-square"></i>
+        Edit
+    </a>
+    
+    <!-- Delete -->
+    <a th:href="@{/events/delete/{id}(id=${event.id})}"
+       class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
+       onclick="return confirm('Are you sure you want to delete this event? This action cannot be undone.');">
+        <i class="bi bi-trash"></i>
+        Delete
+    </a>
+
+    <!-- Forum -->
+    <a th:href="@{/events/{id}/forum(id=${event.id})}"
+       class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1">
+        <i class="bi bi-chat-dots"></i>
+        Forum
+    </a>
+
+    <!-- Feedback -->
+    <a th:href="@{/events/{id}/feedback(id=${event.id})}"
+       class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1">
+        <i class="bi bi-star"></i>
+        Feedback
+    </a>
+
+</div>
+
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- My Registered Events -->
+	<h4 class="fw-bold mb-3">My Registered Events</h4>
+
+	<div th:if="${#lists.isEmpty(registeredTickets)}" class="alert alert-info">
+		No event registrations yet.
+	</div>
+
+	<div class="row g-4" th:if="${!#lists.isEmpty(registeredTickets)}">
+		<div class="col-md-6 col-lg-4" th:each="ticket : ${registeredTickets}">
+			<div class="card event-card shadow-sm p-3 h-100">
+
+				<div class="d-flex flex-column h-100">
+
+					<h6 class="fw-semibold mb-2" th:text="${ticket.event.title}"></h6>
+                    
+					<!-- Paid Badge -->
+					<span class="d-inline-flex align-items-center gap-1 
+								 bg-success-subtle text-success 
+								 rounded px-2 py-1 mb-3 align-self-start"
+						  title="Paid">
+						<i class="bi bi-check-circle-fill small"></i>
+						<span class="small fw-semibold">Paid</span>
+					</span>
+					
+					
+
+					<!-- Actions -->
+					<div class="mt-auto d-flex gap-2">
+						<a th:href="@{/events/{id}/forum(id=${ticket.event.id})}"
+						   class="btn btn-outline-primary btn-soft">Forum</a>
+
+						<a th:href="@{/events/{id}/feedback(id=${ticket.event.id})}"
+						   class="btn btn-outline-secondary btn-soft">Feedback</a>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+</div>
+
+</body>
+</html>
